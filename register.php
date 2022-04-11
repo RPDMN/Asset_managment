@@ -1,45 +1,44 @@
 
 <?php
   include '_dbconnect.php';
+   error_reporting(0);
  
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     
-    $Firstname = $_POST["Firstname"];
-    $Lastname = $_POST["Lastname"];
+    $User_id = $_POST["User_id"];
+    $name = $_POST["name"];
     $email = $_POST["email"];
     $password = $_POST["password"];
     $rpassword = $_POST["rpassword"];
 
     //check wether this username exists
-    $existsql="SELECT * FROM user101 WHERE email = :email  ";
+    $existsql="SELECT * FROM user101 WHERE User_id = :User_id  ";
     $existstmt = $pdo->prepare($existsql);
-    $pdoQuery_run = $existstmt->execute(array(':email' => $email ));
+    $pdoQuery_run = $existstmt->execute(array(':User_id' => $User_id ));
     $count = $existstmt -> rowCount();
     if(count == 0){
      //connecting to db
       if($password == $rpassword){
       $hash=password_hash($password, PASSWORD_DEFAULT);
-       $sql="INSERT INTO user101 (`Firstname`, `Lastname`, `email`, `password`, `rpassword`) VALUES (:Firstname, :Lastname, :email, :password, :rpassword)";
+       $sql="INSERT INTO user101 (`User_id`, `name`, `email`, `password`, `rpassword`) VALUES (:User_id, :name, :email, :password, :rpassword)";
        
        $stmt = $pdo->prepare($sql);
       
-       $pdoQuery_run = $stmt->execute(array(':Firstname'=> $Firstname , ':Lastname'=> $Lastname ,':email' => $email ,':password'=> $hash,':rpassword'=> $hash));
+       $pdoQuery_run = $stmt->execute(array(':User_id'=> $User_id , ':name'=> $name ,':email' => $email ,':password'=> $hash,':rpassword'=> $hash));
        if ($pdoQuery_run) {
-           // echo "\nPDO::errorInfo():\n";
-           // print_r($sql->errorInfo());
-           echo '<script> alert("data inserted")</script>';
-       }else{
-           echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-           <strong>ERROR</strong> The password and confirmation password do not match.
-           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>' ;
-       }  
-     }   
-    } else{
-        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>ERROR</strong> Email already exists.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-       </div>';
+           
+           
+           echo '<script> alert("data inserted")</script>';}
+    
+     }    else{
+       echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+        <strong>ERROR</strong> Password and Confirm password donot match.
+        <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+            <span aria-hidden='true' >&times;</span>
+        </button>
+       </div> ";
+       
+    }
     }
  }  
  
@@ -88,12 +87,12 @@
                             <form class="user"  action="register.php" method="post">
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control form-control-user" name='Firstname' id="Firstname"
-                                            placeholder="First Name">
+                                        <input type="text" class="form-control form-control-user" name='User_id' id="User_id"
+                                            placeholder="User_id">
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control form-control-user" name='Lastname' id="Lastname"
-                                            placeholder="Last Name">
+                                        <input type="text" class="form-control form-control-user" name='name' id="name"
+                                            placeholder="Name">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -116,20 +115,14 @@
                                 <button class="btn btn-primary btn-user btn-block">
                                     Register Account
                                 </button>
-                                <hr>
-                                <a href="index.html" class="btn btn-google btn-user btn-block">
-                                    <i class="fab fa-google fa-fw"></i> Register with Google
-                                </a>
-                                <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
-                                </a>
+                                
                             </form>
                             <hr>
                             <div class="text-center">
-                                <a class="small" href="forgot-password.html">Forgot Password?</a>
+                                <a class="small" href="login.php">Forgot Password?</a>
                             </div>
                             <div class="text-center">
-                                <a class="small" href="login.html">Already have an account? Login!</a>
+                                <a class="small" href="login.php">Already have an account? Login!</a>
                             </div>
                         </div>
                     </div>

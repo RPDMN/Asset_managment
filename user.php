@@ -31,66 +31,32 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="adminlog.php">
-                <div class="sidebar-brand-text mx-3">Admin <sup>Panel</sup></div>
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="user.php">
+                <div class="sidebar-brand-text mx-3">user <sup>Panel</sup></div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <!-- <li class="nav-item active">
-                <a class="nav-link" href="assetavailtable.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+            
 
-                  
-            </li> -->
             <li class="nav-item">
-                 <a class="nav-link " href="add_asset.php"  
+                <a class="nav-link " href="userassetissue.php"  
                     >
-                    
-                    <span>Add Asset</span>
+                    <span>Issued Assets </span>
                 </a>
                 
             </li>
 
             <li class="nav-item">
-                 <a class="nav-link " href="issueasset.php"  
+                <a class="nav-link" href="userhistory.php"  
                     >
-                    
-                    <span>Issue Asset </span>
+                    <span>History</span>
                 </a>
                 
             </li>
 
-            <li class="nav-item">
-                 <a class="nav-link " href="assetavailtable.php"  
-                    >
-                    
-                    <span>Asset Available</span>
-                </a>
-                
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="assetissuedtable.php"  
-                    >
-                    
-                    <span>Asset Issued</span>
-                </a>
-                
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link " href="assetreturnadmin.php"  
-                    >
-                    
-                    <span>Asset History</span>
-                </a>
-                
-            </li>
-           
            
              <!-- Divider  -->
             <hr class="sidebar-divider">
@@ -141,13 +107,19 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?phpecho '$_SESSION['User_id']' ?></span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"></span>
                                 <img class="img-profile rounded-circle"
                                     src="img/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">     
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                               
+                               
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="C:\xampp\htdocs\boot\login.php" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -162,83 +134,19 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
+                    </div>
+
+
+            </div>
             <!-- End of Main Content -->
-           <div class='container-fluid'>
-           <div class='container'>
-            <?php
 
-         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-           include '_dbconnect.php';
-          
-           $asset_Name = (isset($_POST['asset_Name']) ? $_POST['asset_Name'] : '');
-           $description = (isset($_POST['description']) ? $_POST['description'] : '');
-         
-           $sql = "INSERT INTO `asset_info` (`asset_Name`,  `description`) VALUES (:asset_Name,:description); ";
-           $stmt = $pdo->prepare($sql);
-           $pdoQuery_run = $stmt->execute(array(':asset_Name' => $asset_Name,':description' => $description ));
-         
-         }
-         ?>
-
-           
-           
-           <!DOCTYPE html>
-           <html lang="en">
-           <head>
-               <meta charset="UTF-8">
-               <meta http-equiv="X-UA-Compatible" content="IE=edge">
-               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-               <link rel="stylesheet" href="css/add_asset.css">
-               <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-               <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-               <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-               <title>add_asset</title>
-           </head>
-           <body>
-               <div class="container contact">
-                   <div class="row">
-                       <div class="col-md-3">
-                           <div class="contact-info">
-                               <img src="img/cdot_logo.png" alt="image" width='125' id=img_cdot/>
-                              
-                           </div>
-                       </div>
-                       <div class="col-md-9">
-                         <form class="user"  action="add_asset.php" method="post">
-                           <div class="contact-form">
-                               <div class="form-group">
-                                 <label class="control-label col-sm-2" for="asset_Name">Asset Name:</label>
-                                 <div class="col-sm-10">          
-                                   <input type="text" class="form-control" id="asset_Name" placeholder="Enter Asset Name" name="asset_Name">
-                                 </div>
-                               </div>
-                               <div class="form-group">
-                                 <label class="control-label col-sm-2" for="description">Asset Desc:</label>
-                                 <div class="col-sm-10">
-                                   <textarea class="form-control" rows="5" id="description" name='description' placeholder="Enter Asset Description Here" ></textarea>
-                                 </div>
-                               </div>
-                               <div class="form-group">        
-                                 <div class="col-sm-offset-2 col-sm-10">
-                                   <button type="submit" class="btn btn-default">Submit</button>
-                                 </div>
-                               </div>
-                           </div>
-                         </form>
-                       </div>
-                     
-                   </div>
-              
-               
-           </body>
-           </html>
-           
-           </div>
-                      
-                      </div>
-                       
-           
         </div>
         <!-- End of Content Wrapper -->
 

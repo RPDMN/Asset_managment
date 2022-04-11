@@ -39,13 +39,6 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <!-- <li class="nav-item active">
-                <a class="nav-link" href="assetavailtable.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-
-                  
-            </li> -->
             <li class="nav-item">
                  <a class="nav-link " href="add_asset.php"  
                     >
@@ -54,20 +47,20 @@
                 </a>
                 
             </li>
-
+            
             <li class="nav-item">
                  <a class="nav-link " href="issueasset.php"  
                     >
                     
-                    <span>Issue Asset </span>
+                    <span>Issue Asset</span>
                 </a>
                 
             </li>
 
             <li class="nav-item">
-                 <a class="nav-link " href="assetavailtable.php"  
+                <a class="nav-link " href="assetavailtable.php"  
                     >
-                    
+
                     <span>Asset Available</span>
                 </a>
                 
@@ -164,86 +157,76 @@
                 <!-- Begin Page Content -->
                 
             <!-- End of Main Content -->
-           <div class='container-fluid'>
-           <div class='container'>
-            <?php
-
-         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-           include '_dbconnect.php';
-          
-           $asset_Name = (isset($_POST['asset_Name']) ? $_POST['asset_Name'] : '');
-           $description = (isset($_POST['description']) ? $_POST['description'] : '');
-         
-           $sql = "INSERT INTO `asset_info` (`asset_Name`,  `description`) VALUES (:asset_Name,:description); ";
-           $stmt = $pdo->prepare($sql);
-           $pdoQuery_run = $stmt->execute(array(':asset_Name' => $asset_Name,':description' => $description ));
-         
-         }
-         ?>
-
-           
-           
-           <!DOCTYPE html>
-           <html lang="en">
-           <head>
-               <meta charset="UTF-8">
-               <meta http-equiv="X-UA-Compatible" content="IE=edge">
-               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-               <link rel="stylesheet" href="css/add_asset.css">
-               <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-               <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-               <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-               <title>add_asset</title>
-           </head>
-           <body>
-               <div class="container contact">
-                   <div class="row">
-                       <div class="col-md-3">
-                           <div class="contact-info">
-                               <img src="img/cdot_logo.png" alt="image" width='125' id=img_cdot/>
-                              
-                           </div>
-                       </div>
-                       <div class="col-md-9">
-                         <form class="user"  action="add_asset.php" method="post">
-                           <div class="contact-form">
-                               <div class="form-group">
-                                 <label class="control-label col-sm-2" for="asset_Name">Asset Name:</label>
-                                 <div class="col-sm-10">          
-                                   <input type="text" class="form-control" id="asset_Name" placeholder="Enter Asset Name" name="asset_Name">
-                                 </div>
-                               </div>
-                               <div class="form-group">
-                                 <label class="control-label col-sm-2" for="description">Asset Desc:</label>
-                                 <div class="col-sm-10">
-                                   <textarea class="form-control" rows="5" id="description" name='description' placeholder="Enter Asset Description Here" ></textarea>
-                                 </div>
-                               </div>
-                               <div class="form-group">        
-                                 <div class="col-sm-offset-2 col-sm-10">
-                                   <button type="submit" class="btn btn-default">Submit</button>
-                                 </div>
-                               </div>
-                           </div>
-                         </form>
-                       </div>
-                     
-                   </div>
-              
-               
-           </body>
-           </html>
-           
-           </div>
-                      
-                      </div>
+            <div class="container-fluid">
+                              <!DOCTYPE html>
+                  <html lang="en">
+                  <head>
+                      <meta charset="UTF-8">
+                      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                       <!-- <link rel="stylesheet" href="css/assetavailtable.css">  -->
+                      <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+                      <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+                      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+                      <title>add_asset</title>
+                  </head>
+                  <body>
+                  <table class="table table-dark table-striped table-hover table-bordered">
+                    <thead>
+                    <th colspan="4" class="text-center"><h2>Assets Available</h2></th> 
+                      <tr>
+                        <th scope="col">Asset_Id</th>
+                        <th scope="col">Asset_Name</th>
+                        <th scope="col">description</th>
+                        <th scope="col">Status</th>
+                        
+                  
                        
-           
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                  
+                   <?php
+                    include '_dbconnect.php';
+                
+                  
+                    $query_assetList = $pdo->prepare('SELECT * FROM asset_info WHERE Status="AVAILABLE"');
+                    $query_assetList->execute();
+                    $result = $query_assetList->fetchAll();
+                    
+                    foreach($result as $row)
+                    {
+                    
+                         ?> 
+                          <tr>
+                         
+                          <td><?php echo $row['asset_id'] ?></td>
+                          <td><?php echo $row['asset_Name'] ?></td>
+                          <td><?php echo $row['description'] ?></td>
+                          <td><?php echo $row['Status'] ?></td>
+                         
+                          </tr>        
+                        
+                    <?php  }
+                    
+                  
+                    
+                  ?>
+                    </tbody>
+                  </table>
+                 
+                  </body>
+                  <!-- </html> -->
+                    </div>
+            
+
         </div>
         <!-- End of Content Wrapper -->
 
     </div>
     <!-- End of Page Wrapper -->
+       
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded " href="#page-top">

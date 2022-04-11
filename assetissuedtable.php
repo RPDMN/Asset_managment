@@ -39,13 +39,6 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <!-- <li class="nav-item active">
-                <a class="nav-link" href="assetavailtable.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-
-                  
-            </li> -->
             <li class="nav-item">
                  <a class="nav-link " href="add_asset.php"  
                     >
@@ -54,29 +47,32 @@
                 </a>
                 
             </li>
-
+            
+          
             <li class="nav-item">
                  <a class="nav-link " href="issueasset.php"  
                     >
                     
-                    <span>Issue Asset </span>
+                    <span>Issue Asset</span>
                 </a>
                 
             </li>
 
             <li class="nav-item">
-                 <a class="nav-link " href="assetavailtable.php"  
+                <a class="nav-link " href="assetavailtable.php"  
                     >
-                    
+                 
                     <span>Asset Available</span>
                 </a>
                 
             </li>
 
+           
+
             <li class="nav-item">
                 <a class="nav-link" href="assetissuedtable.php"  
                     >
-                    
+                   
                     <span>Asset Issued</span>
                 </a>
                 
@@ -162,83 +158,105 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                
+                <div class="container-fluid">
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <link rel="stylesheet" href="css/assetavailtable.css"> -->
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<title>add_asset</title>
+</head>
+<body>
+
+
+<table class="table table-dark table-striped table-hover table-bordered" id='table'>
+<thead>
+ <th colspan="8" class="text-center"><h1>Asset Issued</h1></th> 
+<tr >
+  <th scope="col">User_Id</th>
+  <th scope="col">User_Name</th>
+  <th scope="col">Asset_Name</th>
+  <th scope="col">Asset_Id</th>
+  <th scope="col">Issued_on</th>
+  <th scope="col">Action</th>
+</tr>
+</thead>
+ <tbody>
+ <?php
+  include '_dbconnect.php';
+  $sql = "SELECT userasset.id,userasset.User_id,user101.name,asset_info.asset_Name,asset_info.asset_id,userasset.issued_on,userasset.returned_on,userasset.returned from user101,asset_info,userasset WHERE user101.User_id = userasset.User_id AND asset_info.asset_id = userasset.asset_id AND userasset.returned=0;";
+  $query_assetList = $pdo->prepare($sql);
+  $query_assetList->execute();
+   $result = $query_assetList->fetchAll(PDO::FETCH_ASSOC);
+  
+  foreach($result as $row )
+  {
+       ?> 
+        <tr> 
+        <td><?php echo $row['User_id'] ?></td>
+        <td><?php echo $row['name'] ?></td>
+        <td><?php echo $row['asset_Name'] ?></td>
+        <td><?php echo $row['asset_id'] ?></td>
+        <td><?php echo $row['issued_on'] ?></td>
+        <td>
+            <!-- <a href='delete.php?rn=User_id'> -->
+            <!-- <button type="button" class="btn  bg-light text-danger ">Remove</button> -->
+            <button id='return' class="btn  bg-light text-danger" onclick="returnAsset(<?php echo $row['id']?>)">Return</button>
+        </td>
+        </tr>        
+      
+  <?php  }  
+ ?>
+  </tbody>
+  </table>
+<script>
+function loadtable(){
+loadtable()
+}
+
+
+function returnAsset(recId)
+{
+//alert('ON Click triggered : '+ recId);
+var formData = {
+recordId: recId
+};
+
+$.ajax({
+async: false,
+type: 'POST',
+url: 'delete.php',
+data: formData,
+success: function(result, textStatus,jqXHR) {
+  alert('Asset Returned Successfully');
+  location.reload();
+},
+error: function(jqXHR, textStatus, errorThrown){
+console.log("Error in AJAX Request" + textStatus);
+alert(jqXHR.responseText);
+},
+complete: function(jqXHR, textStatus){
+  console.log("Request Completed Successfully");
+}
+});
+
+}
+</script>
+
+</body>
+</html>
+
+
+
             <!-- End of Main Content -->
-           <div class='container-fluid'>
-           <div class='container'>
-            <?php
 
-         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-           include '_dbconnect.php';
-          
-           $asset_Name = (isset($_POST['asset_Name']) ? $_POST['asset_Name'] : '');
-           $description = (isset($_POST['description']) ? $_POST['description'] : '');
-         
-           $sql = "INSERT INTO `asset_info` (`asset_Name`,  `description`) VALUES (:asset_Name,:description); ";
-           $stmt = $pdo->prepare($sql);
-           $pdoQuery_run = $stmt->execute(array(':asset_Name' => $asset_Name,':description' => $description ));
-         
-         }
-         ?>
 
-           
-           
-           <!DOCTYPE html>
-           <html lang="en">
-           <head>
-               <meta charset="UTF-8">
-               <meta http-equiv="X-UA-Compatible" content="IE=edge">
-               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-               <link rel="stylesheet" href="css/add_asset.css">
-               <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-               <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-               <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-               <title>add_asset</title>
-           </head>
-           <body>
-               <div class="container contact">
-                   <div class="row">
-                       <div class="col-md-3">
-                           <div class="contact-info">
-                               <img src="img/cdot_logo.png" alt="image" width='125' id=img_cdot/>
-                              
-                           </div>
-                       </div>
-                       <div class="col-md-9">
-                         <form class="user"  action="add_asset.php" method="post">
-                           <div class="contact-form">
-                               <div class="form-group">
-                                 <label class="control-label col-sm-2" for="asset_Name">Asset Name:</label>
-                                 <div class="col-sm-10">          
-                                   <input type="text" class="form-control" id="asset_Name" placeholder="Enter Asset Name" name="asset_Name">
-                                 </div>
-                               </div>
-                               <div class="form-group">
-                                 <label class="control-label col-sm-2" for="description">Asset Desc:</label>
-                                 <div class="col-sm-10">
-                                   <textarea class="form-control" rows="5" id="description" name='description' placeholder="Enter Asset Description Here" ></textarea>
-                                 </div>
-                               </div>
-                               <div class="form-group">        
-                                 <div class="col-sm-offset-2 col-sm-10">
-                                   <button type="submit" class="btn btn-default">Submit</button>
-                                 </div>
-                               </div>
-                           </div>
-                         </form>
-                       </div>
-                     
-                   </div>
-              
-               
-           </body>
-           </html>
-           
-           </div>
-                      
-                      </div>
-                       
-           
+
         </div>
         <!-- End of Content Wrapper -->
 
@@ -290,3 +308,4 @@
 </body>
 
 </html>
+

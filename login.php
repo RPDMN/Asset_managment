@@ -1,35 +1,37 @@
 
   <?php
   
- 
+  session_start();
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     include '_dbconnect.php';
     $login = false;
-    $email = $_POST["email"];
+    $User_id = $_POST["User_id"];
     $password = $_POST["password"];
     $exist = false ;
  
-   // $sql = "SELECT * FROM user101 WHERE email = :email AND password = :password";
-    $sql = "SELECT * FROM user101 WHERE email = :email ";
+   
+    $sql = "SELECT * FROM user101 WHERE User_id = :User_id ";
     $stmt = $pdo->prepare($sql);
-   // $pdoQuery_run = $stmt->execute(array(':email' => $email ,':password'=> $password));
-    $pdoQuery_run = $stmt->execute(array(':email' => $email ));
-
-   // $count = $stmt -> rowCount();
-   $count = $stmt -> fetch();
+    $pdoQuery_run = $stmt->execute(array(':User_id' => $User_id ));
+    $count = $stmt -> fetch();
     if(password_verify($password,$count['password'])){
-     $_SESSION['email'] = $_POST['email'];
-     $_SESSION['password'] = $_POST['password'];
-     header("location:index.html");
+        $_SESSION['User_id'] =  $User_id;
+        $_SESSION['password'] = $password;
+        $_SESSION['admin'] = $count['admin'];
+     if($_SESSION['admin'] == 'admin'){
+        header("location:adminlog.php");
+     }else{
+        header("location:user.php");
+     }
     }else{
-        echo'<div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>CREDENTIALS</strong> Not Right.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>';
+        echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+        <strong>CREDENIALS</strong>  Donot match.
+        <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+            <span aria-hidden='true' >&times;</span>
+        </button>
+       </div> ";
     }
   }
- 
- 
 
 ?>
 
@@ -81,10 +83,11 @@
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
                                     <form class="user" action="login.php" method="post" >
+                                       
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user" name = 'email'
-                                                id="email" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
+                                            <input type="text" class="form-control form-control-user" name = 'User_id'
+                                                id="User_id" 
+                                                placeholder="Enter Staff Id ">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user" name = 'password'
@@ -93,8 +96,7 @@
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
                                                 <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">Remember
-                                                    Me</label>
+                                               
                                             </div>
                                         </div>
                                         <!-- <a href="index.html" class="btn btn-primary btn-user btn-block">
@@ -103,19 +105,14 @@
                                         
                                         <button href='index.html' class="btn btn-primary btn-user btn-block"> Login </button>
                                         <hr>
-                                        <a href="index.html" class="btn btn-google btn-user btn-block">
-                                            <i class="fab fa-google fa-fw"></i> Login with Google
-                                        </a>
-                                        <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                            <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
-                                        </a>
+                                        
                                     </form>
-                                    <hr>
+                                    
                                     <div class="text-center">
                                         <a class="small" href="forgot-password.html">Forgot Password?</a>
                                     </div>
                                     <div class="text-center">
-                                        <a class="small" href="register.php">Create an Account!</a>
+                                        <a class="small" href=register.php>Create an Account!</a>
                                     </div>
                                 </div>
                             </div>

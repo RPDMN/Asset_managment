@@ -39,13 +39,10 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <!-- <li class="nav-item active">
-                <a class="nav-link" href="assetavailtable.php">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
+           
 
                   
-            </li> -->
+           
             <li class="nav-item">
                  <a class="nav-link " href="add_asset.php"  
                     >
@@ -54,12 +51,12 @@
                 </a>
                 
             </li>
-
+           
             <li class="nav-item">
                  <a class="nav-link " href="issueasset.php"  
                     >
                     
-                    <span>Issue Asset </span>
+                    <span>Issue Asset</span>
                 </a>
                 
             </li>
@@ -167,21 +164,34 @@
            <div class='container-fluid'>
            <div class='container'>
             <?php
+            include '_dbconnect.php';
+            $smt = $pdo->prepare('SELECT * From user101');
+            $smt->execute();
+            $userList = $smt->fetchAll();
 
-         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-           include '_dbconnect.php';
-          
-           $asset_Name = (isset($_POST['asset_Name']) ? $_POST['asset_Name'] : '');
-           $description = (isset($_POST['description']) ? $_POST['description'] : '');
-         
-           $sql = "INSERT INTO `asset_info` (`asset_Name`,  `description`) VALUES (:asset_Name,:description); ";
-           $stmt = $pdo->prepare($sql);
-           $pdoQuery_run = $stmt->execute(array(':asset_Name' => $asset_Name,':description' => $description ));
-         
-         }
+            
+            $smt1 = $pdo->prepare('SELECT * From asset_info WHERE Status="AVAILABLE"');
+            $smt1->execute();
+            $assetList = $smt1->fetchAll();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
+
+    $User_id = (isset($_POST['User_id']) ? $_POST['User_id'] : '');
+    $asset_id = (isset($_POST['asset_id']) ? $_POST['asset_id'] : '');
+    $issued_on = (isset($_POST['issued_on']) ? $_POST['issued_on'] : '');
+    //  echo($issued_on);
+    $sql = "INSERT INTO userasset (User_id,asset_id, issued_on) VALUES (:User_id,:asset_id,:issued_on)";
+    $stmt = $pdo->prepare($sql);
+    $pdoQuery_run = $stmt->execute(array(':User_id' => $User_id, ':asset_id' => $asset_id, ':issued_on' => $issued_on));
+   
+    $stmt1 = $pdo->prepare('UPDATE asset_info SET Status = "NOT AVAILABLE"  WHERE asset_id = '.$asset_id);
+    $q1 = $stmt1->execute();
+    
+
+}
          ?>
 
-           
            
            <!DOCTYPE html>
            <html lang="en">
@@ -190,6 +200,7 @@
                <meta http-equiv="X-UA-Compatible" content="IE=edge">
                <meta name="viewport" content="width=device-width, initial-scale=1.0">
                <link rel="stylesheet" href="css/add_asset.css">
+               <!-- <link rel="stylesheet" href="css/date.css"> -->
                <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
                <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
                <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -205,20 +216,39 @@
                            </div>
                        </div>
                        <div class="col-md-9">
-                         <form class="user"  action="add_asset.php" method="post">
+                         <form class="user"  action="issueasset.php" method="post">
                            <div class="contact-form">
                                <div class="form-group">
-                                 <label class="control-label col-sm-2" for="asset_Name">Asset Name:</label>
+                                 <label class="control-label col-sm-2" for="User_id">User Id:</label>
                                  <div class="col-sm-10">          
-                                   <input type="text" class="form-control" id="asset_Name" placeholder="Enter Asset Name" name="asset_Name">
+                                 <select name="User_id" id="User_id">
+                                   <?php 
+                                   foreach ($userList as $userRow){?>
+                                       <option value="<?php echo $userRow['User_id']?>"><?php echo $userRow['name']."-".$userRow['User_id']?></option>
+                                   <?php } ?>
+                                   </select>
+                                  
                                  </div>
-                               </div>
+                              </div>  
                                <div class="form-group">
-                                 <label class="control-label col-sm-2" for="description">Asset Desc:</label>
-                                 <div class="col-sm-10">
-                                   <textarea class="form-control" rows="5" id="description" name='description' placeholder="Enter Asset Description Here" ></textarea>
+                                 <label class="control-label col-sm-2" for="asset_id">Asset Id:</label>
+                                 <div class="col-sm-10">          
+                                 <select name="asset_id" id="asset_id">
+                                   <?php foreach ($assetList as $assetRow){?>
+                                       <option value="<?php echo $assetRow['asset_id']?>"> <?php echo $assetRow['asset_Name']."-".$assetRow['asset_id']?></option>
+                                   <?php } ?>
+                                   </select>
+                                </div>
+                               </div>
+
+                               
+                               <div class="form-group">
+                                 <label class="control-label col-sm-2" id="issued_on"for="issued_on">Issued On:</label>
+                                 <div class="col-sm-10">          
+                                 <input type='date' class='center' name="issued_on"   width='100' required="required">
                                  </div>
                                </div>
+ 
                                <div class="form-group">        
                                  <div class="col-sm-offset-2 col-sm-10">
                                    <button type="submit" class="btn btn-default">Submit</button>
@@ -229,7 +259,7 @@
                        </div>
                      
                    </div>
-              
+                  
                
            </body>
            </html>
